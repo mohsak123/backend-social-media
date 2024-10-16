@@ -41,26 +41,34 @@ module.exports.createPostCtrl = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: error.details[0].message });
   }
 
-  let imagePath = "";
-  let filePath = "";
-  let result = "";
+  const { title, description } = req.body;
+  let postPhoto = req.file;
 
-  if (req.file) {
-    imagePath = await path.join(
-      __dirname,
-      `../postPhotos/${req.file.filename}`
-    );
-    filePath = await "social-media/post-photos";
-    result = await cloudinaryUploadImage(imagePath, filePath);
+  let imagePath = "";
+  let filename = "";
+  let dataUrl = "";
+
+  if (postPhoto) {
+    filename = postPhoto.filename;
+    imagePath = path.join(__dirname, `../postPhotos/${filename}`);
+
+    fs.renameSync(postPhoto.path, imagePath);
+
+    const imageBuffer = fs.readFileSync(imagePath);
+    base64Image = imageBuffer.toString("base64");
+
+    const mimeType = postPhoto.mimetype;
+    dataUrl = `data:${mimeType};base64,${base64Image}`;
   }
+
+  console.log(filename);
 
   const post = await Post.create({
     title: req.body.title,
     description: req.body.description,
     user: req.user.id,
     postPhoto: {
-      url: result.secure_url,
-      publicId: result.public_id,
+      url: dataUrl,
     },
   });
 
