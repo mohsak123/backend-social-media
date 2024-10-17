@@ -9,16 +9,12 @@ connectToDB();
 const app = express();
 const cors = require("cors");
 
-const corsConfig = {
-  origin: "*",
-  credential: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-};
+
 
 // Middlewares
 app.use(express.json());
 
-app.cors(corsConfig);
+app.use(cors());
 
 // app.use(cors());
 
