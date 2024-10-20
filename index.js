@@ -2,6 +2,7 @@ const express = require("express");
 const connectToDB = require("./config/connectToDB");
 require("dotenv").config();
 const multer = require("multer");
+const path = require("path");
 
 // connect to mongodb
 connectToDB();
@@ -15,10 +16,12 @@ const corsConfig = {
   methods: ["GET", "POST", "PUT", "DELETE"],
 };
 
+app.use(express.static(path.join(__dirname, "public")));
+
 // Middlewares
 app.use(express.json());
 
-app.cors(corsConfig);
+app.use(cors(corsConfig));
 
 // app.use(cors());
 

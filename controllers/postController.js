@@ -44,24 +44,36 @@ module.exports.createPostCtrl = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
   let postPhoto = req.file;
 
+  // let image = "";
   let imagePath = "";
   let filename = "";
   let dataUrl = "";
 
+  // if (postPhoto) {
+  //   filename = postPhoto.filename;
+  //   imagePath = path.join(__dirname, `../public/${image}`);
+  //   image = postPhoto;
+
+  //   fs.renameSync(postPhoto.path, imagePath);
+
+  //   const imageBuffer = fs.readFileSync(imagePath);
+  //   base64Image = imageBuffer.toString("base64");
+
+  //   const mimeType = postPhoto.mimetype;
+  //   dataUrl = `data:${mimeType};base64,${base64Image}`;
+  // }
+
   if (postPhoto) {
     filename = postPhoto.filename;
-    imagePath = path.join(__dirname, `../postPhotos/${filename}`);
-
+    imagePath = path.join(__dirname, `../public/postPhoto/${filename}`);
+    // image = postPhoto;
     fs.renameSync(postPhoto.path, imagePath);
-
     const imageBuffer = fs.readFileSync(imagePath);
     base64Image = imageBuffer.toString("base64");
-
     const mimeType = postPhoto.mimetype;
-    dataUrl = `data:${mimeType};base64,${base64Image}`;
+    // dataUrl = `data:${mimeType};base64,${base64Image}`;
+    dataUrl = `http://localhost:4000/postPhoto/${filename}`;
   }
-
-  console.log(filename);
 
   const post = await Post.create({
     title: req.body.title,
@@ -78,9 +90,9 @@ module.exports.createPostCtrl = asyncHandler(async (req, res) => {
     message: "Your post has been created successfully",
   });
 
-  if (imagePath !== "") {
-    fs.unlinkSync(imagePath);
-  }
+  // if (imagePath !== "") {
+  //   fs.unlinkSync(imagePath);
+  // }
 });
 
 // Update Post

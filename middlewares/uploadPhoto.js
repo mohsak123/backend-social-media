@@ -32,7 +32,7 @@ const diskStorageBanner = multer.diskStorage({
 // Post Photo Storage
 const diskStoragePost = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../postPhotos"));
+    cb(null, path.join(__dirname, "../public/postPhoto"));
   },
   filename: function (req, file, cb) {
     if (file) {
