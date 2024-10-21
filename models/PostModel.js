@@ -15,8 +15,10 @@ const PostSchema = new mongoose.Schema(
       trim: true,
     },
     postPhoto: {
-      url: { type: String },
+      // url: { type: String },
       // type: String,
+      name: String,
+      type: String,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

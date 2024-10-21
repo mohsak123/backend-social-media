@@ -35,19 +35,21 @@ module.exports.getOnePostCtrl = asyncHandler(async (req, res) => {
 
 // Create a new post
 module.exports.createPostCtrl = asyncHandler(async (req, res) => {
-  const { error } = validateCreatePost(req.body);
+  // const { error } = validateCreatePost(req.body);
 
-  if (error) {
-    return res.status(400).json({ message: error.details[0].message });
-  }
+  // if (error) {
+  //   return res.status(400).json({ message: error.details[0].message });
+  // }
 
-  const { title, description } = req.body;
-  let postPhoto = req.file;
+  const { postPhoto, title, description } = req.body;
 
+  let imageData = "";
+
+  // let postPhoto = req.file;
   // let image = "";
-  let imagePath = "";
-  let filename = "";
-  let dataUrl = "";
+  // let imagePath = "";
+  // let filename = "";
+  // let dataUrl = "";
 
   // if (postPhoto) {
   //   filename = postPhoto.filename;
@@ -63,25 +65,27 @@ module.exports.createPostCtrl = asyncHandler(async (req, res) => {
   //   dataUrl = `data:${mimeType};base64,${base64Image}`;
   // }
 
-  if (postPhoto) {
-    filename = postPhoto.filename;
-    imagePath = path.join(__dirname, `../public/postPhoto/${filename}`);
-    // image = postPhoto;
-    fs.renameSync(postPhoto.path, imagePath);
-    const imageBuffer = fs.readFileSync(imagePath);
-    base64Image = imageBuffer.toString("base64");
-    const mimeType = postPhoto.mimetype;
-    // dataUrl = `data:${mimeType};base64,${base64Image}`;
-    dataUrl = `http://localhost:4000/postPhoto/${filename}`;
+  // if (postPhoto) {
+  //   filename = postPhoto.filename;
+  //   imagePath = path.join(__dirname, `../public/postPhoto/${filename}`);
+  //   // image = postPhoto;
+  //   fs.renameSync(postPhoto.path, imagePath);
+  //   const imageBuffer = fs.readFileSync(imagePath);
+  //   base64Image = imageBuffer.toString("base64");
+  //   const mimeType = postPhoto.mimetype;
+  //   // dataUrl = `data:${mimeType};base64,${base64Image}`;
+  //   dataUrl = `http://localhost:4000/postPhoto/${filename}`;
+  // }
+
+  if (postPhoto.name !== "") {
+    imageData = `data:${postPhoto.type};base64,${postPhoto.name}`;
   }
 
   const post = await Post.create({
-    title: req.body.title,
-    description: req.body.description,
+    title,
+    description,
     user: req.user.id,
-    postPhoto: {
-      url: dataUrl,
-    },
+    postPhoto: imageData,
   });
 
   await post.save();
