@@ -136,7 +136,7 @@ module.exports.updatePostCtrl = asyncHandler(async (req, res) => {
 // Update Post Image
 module.exports.updatePostImageCtrl = asyncHandler(async (req, res) => {
   // Validation
-  if (!req.file) {
+  if (!req.body) {
     res.status(404).json({ message: "no file provided" });
   }
 
@@ -154,12 +154,12 @@ module.exports.updatePostImageCtrl = asyncHandler(async (req, res) => {
   }
 
   // delete the Image
-  await cloudinaryRemoveImage(post.postPhoto.publicId);
+  // await cloudinaryRemoveImage(post.postPhoto.publicId);
 
   // Upload New Photo
-  const imagePath = path.join(__dirname, `../postPhotos/${req.file.filename}`);
-  const filePath = "social-media/post-photos";
-  const result = await cloudinaryUploadImage(imagePath, filePath);
+  // const imagePath = path.join(__dirname, `../postPhotos/${req.file.filename}`);
+  // const filePath = "social-media/post-photos";
+  // const result = await cloudinaryUploadImage(imagePath, filePath);
 
   // Update The Image Field In The DB
   const updatedPost = await Post.findByIdAndUpdate(
