@@ -153,23 +153,20 @@ module.exports.updatePostImageCtrl = asyncHandler(async (req, res) => {
       .json({ message: "Access Denied, you are not allowed" });
   }
 
-  // delete the Image
-  // await cloudinaryRemoveImage(post.postPhoto.publicId);
+  const { postImage } = req.body;
 
-  // Upload New Photo
-  // const imagePath = path.join(__dirname, `../postPhotos/${req.file.filename}`);
-  // const filePath = "social-media/post-photos";
-  // const result = await cloudinaryUploadImage(imagePath, filePath);
+  let imageData = "";
+
+  if (postImage.name !== "") {
+    imageData = `data:${postImage.image.type};base64,${postImage.image.name}`;
+  }
 
   // Update The Image Field In The DB
   const updatedPost = await Post.findByIdAndUpdate(
     req.params.id,
     {
       $set: {
-        postPhoto: {
-          url: result.secure_url,
-          publicId: result.public_id,
-        },
+        postPhoto: imageData,
       },
     },
     { new: true }
@@ -179,7 +176,7 @@ module.exports.updatePostImageCtrl = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Your post photo updated successfully" });
 
   // Remove Image The Server
-  fs.unlinkSync(imagePath);
+  // fs.unlinkSync(imagePath);
 });
 
 // Delete Post
