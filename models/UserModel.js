@@ -26,18 +26,12 @@ const UserSchema = new mongoose.Schema(
       maxlength: 128,
     },
     profilePhoto: {
-      type: Object,
-      default: {
-        url: "../images/default-profile-photo.jpeg",
-        publicId: null,
-      },
+      type: String,
+      name: String,
     },
     banner: {
-      type: Object,
-      default: {
-        url: "",
-        publicId: null,
-      },
+      type: String,
+      name: String,
     },
     bio: {
       type: String,

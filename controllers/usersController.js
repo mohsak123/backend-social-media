@@ -67,74 +67,44 @@ module.exports.updateUserProfileCtrl = asyncHandler(async (req, res) => {
 
 // Profile Photo Upload
 module.exports.profilePhotoUploadCtrl = asyncHandler(async (req, res) => {
-  if (!req.file) {
-    return res.status(404).json({ message: "no file provided" });
-  }
-
-  const imagePath = path.join(
-    __dirname,
-    `../profilePhotos/${req.file.filename}`
-  );
-
-  const filePath = "social-media/profile-photos";
-
-  const result = await cloudinaryUploadImage(imagePath, filePath);
+  const { profileImage } = req.body;
 
   const user = await User.findById(req.user.id);
 
-  if (user.profilePhoto.publicId !== null) {
-    await cloudinaryRemoveImage(user.profilePhoto.publicId);
+  let imageData = "";
+
+  if (profileImage.name !== "") {
+    imageData = `data:${profileImage.type};base64,${profileImage.name}`;
   }
 
-  user.profilePhoto = {
-    url: result.secure_url,
-    publicId: result.public_id,
-  };
+  user.profilePhoto = imageData;
 
   await user.save();
 
   res.status(200).json({
     message: "your profile photo upload successfully",
-    profilePhoto: { url: result.secure_url, publicId: result.public_id },
   });
-
-  fs.unlinkSync(imagePath);
 });
 
 // Banner Profile Upload
 module.exports.bannerPhotoUploadCtrl = asyncHandler(async (req, res) => {
-  if (!req.file) {
-    return res.status(404).json({ message: "no file provided" });
-  }
+  const { bannerImage } = req.body;
 
-  const imagePath = path.join(
-    __dirname,
-    `../bannerPhotos/${req.file.filename}`
-  );
-
-  const filePath = "social-media/banner-photos";
-
-  const result = await cloudinaryUploadImage(imagePath, filePath);
+  let imageData = "";
 
   const user = await User.findById(req.user.id);
 
-  if (user.banner.publicId !== null) {
-    cloudinaryRemoveImage(user.banner.publicId);
+  if (bannerImage.name !== "") {
+    imageData = `data:${bannerImage.type};base64,${bannerImage.name}`;
   }
 
-  user.banner = {
-    url: result.secure_url,
-    publicId: result.public_id,
-  };
+  user.banner = imageData;
 
   await user.save();
 
   res.status(200).json({
     message: "your banner photo upload successfully",
-    banner: { url: result.secure_url, publicId: result.public_id },
   });
-
-  fs.unlinkSync(imagePath);
 });
 
 // Delete User Profile
@@ -146,15 +116,6 @@ module.exports.deleteUserProfileCtrl = asyncHandler(async (req, res) => {
   }
 
   const posts = await Post.find({ user: user._id });
-
-  const publicIds = posts?.map((post) => post.postPhoto.publicId);
-
-  if (publicIds?.length > 0) {
-    await cloudinaryRemoveMultipleImage(publicIds);
-  }
-
-  await cloudinaryRemoveImage(user.profilePhoto.publicId);
-  await cloudinaryRemoveImage(user.banner.publicId);
 
   await Post.deleteMany({ user: user._id });
   await Comment.deleteMany({ user: user._id });

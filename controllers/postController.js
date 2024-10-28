@@ -158,7 +158,7 @@ module.exports.updatePostImageCtrl = asyncHandler(async (req, res) => {
   let imageData = "";
 
   if (postImage.name !== "") {
-    imageData = `data:${postImage.image.type};base64,${postImage.image.name}`;
+    imageData = `data:${postImage.type};base64,${postImage.name}`;
   }
 
   // Update The Image Field In The DB
