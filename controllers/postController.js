@@ -25,12 +25,26 @@ module.exports.getAllPostsCtrl = asyncHandler(async (req, res) => {
 
 // Get One Post
 module.exports.getOnePostCtrl = asyncHandler(async (req, res) => {
-  const post = await Post.findById(req.params.id).populate("comments");
+  const post = await Post.findById(req.params.id);
+  // .populate("comments");
   if (!post) {
     return res.status(404).json({ message: "Post Not Found" });
   }
 
   res.status(200).json(post);
+});
+
+// Get Comments For One Post
+module.exports.getCommentsForOnePostCtrl = asyncHandler(async (req, res) => {
+  const post = await Post.findById(req.params.id).populate("comments");
+
+  if (!post) {
+    return res.status(404).json({ message: "Post Not Found" });
+  }
+
+  const comments = await post.comments;
+
+  res.status(200).json(comments);
 });
 
 // Create a new post
@@ -204,4 +218,43 @@ module.exports.postPhotoUploadCtrl = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json({ message: "Upload Photo Post Has Been Successfully" });
+});
+
+// Toggle Like
+module.exports.toggleLikeCtrl = asyncHandler(async (req, res) => {
+  const loggedInUser = req.user.id;
+  const { id: postId } = req.params;
+
+  let post = await Post.findById(postId);
+  if (!post) {
+    return res.status(404).json({ message: "post not found" });
+  }
+
+  const isPostAlreadyLiked = post.likes.find(
+    (user) => user.toString() === loggedInUser
+  );
+
+  if (isPostAlreadyLiked) {
+    post = await Post.findByIdAndUpdate(
+      postId,
+      {
+        $pull: {
+          likes: loggedInUser,
+        },
+      },
+      { new: true }
+    );
+  } else {
+    post = await Post.findByIdAndUpdate(
+      postId,
+      {
+        $push: {
+          likes: loggedInUser,
+        },
+      },
+      { new: true }
+    );
+  }
+
+  res.status(200).json(post);
 });

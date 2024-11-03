@@ -21,15 +21,19 @@ module.exports.getAllUsersCtrl = asyncHandler(async (req, res) => {
 
 // Get User Profile
 module.exports.getUserProfileCtrl = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id)
-    .select("-password")
-    .populate("posts");
+  const user = await User.findById(req.params.id).select("-password");
 
   if (!user) {
     return res.status(404).json({ message: "User Not Found" });
   }
 
-  res.status(200).json(user);
+  // Fetch the user's posts, sorted from newest to oldest
+  const posts = await Post.find({ user: user._id }).sort({ createdAt: -1 });
+
+  // Attach sorted posts to user object
+  const userWithPosts = { ...user.toObject(), posts };
+
+  res.status(200).json(userWithPosts);
 });
 
 // Update User Profile
@@ -115,12 +119,25 @@ module.exports.deleteUserProfileCtrl = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "User Not Found" });
   }
 
-  const posts = await Post.find({ user: user._id });
+  // Find all posts where the user has liked
+  const likedPosts = await Post.find({ likes: user._id });
 
+  // Remove the user's like from each post
+  for (const post of likedPosts) {
+    post.likes = post.likes.filter(
+      (like) => like.toString() !== user._id.toString()
+    );
+    await post.save();
+  }
+
+  // Delete user's posts and comments
   await Post.deleteMany({ user: user._id });
   await Comment.deleteMany({ user: user._id });
 
+  // Delete user account
   await User.findByIdAndDelete(req.params.id);
 
-  res.status(200).json({ message: "your profile has been deleted" });
+  res.status(200).json({
+    message: "Your profile has been deleted successfully",
+  });
 });

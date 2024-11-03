@@ -31,7 +31,7 @@ const PostSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    Loves: [
+    Saves: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
