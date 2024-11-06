@@ -2,6 +2,7 @@ const router = require("express").Router();
 const {
   registerUserCtrl,
   loginUserCtrl,
+  verifyEmail,
 } = require("../controllers/authController");
 
 // const { sendOTP } = require("../controllers/otpController");
@@ -12,20 +13,8 @@ router.post("/register", registerUserCtrl);
 // /api/auth/login
 router.post("/login", loginUserCtrl);
 
-// request new verification otp
-// router.post("/send-otp", async (req, res) => {
-//   try {
-//     const { email, subject, message, duration } = req.body;
-//     const createdOTP = await sendOTP({
-//       email,
-//       subject,
-//       message,
-//       duration,
-//     });
-//     res.status(200).json(createdOTP);
-//   } catch (error) {
-//     throw error;
-//   }
-// });
+router.route("/verifyEmail").post(verifyEmail);
 
 module.exports = router;
+
+// 672b087fc8b4320a801a143d
