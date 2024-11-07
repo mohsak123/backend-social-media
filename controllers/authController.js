@@ -31,14 +31,15 @@ module.exports.registerUserCtrl = asyncHandler(async (req, res) => {
 
   const msg = `
       <html>
-        <body style="font-size:"30px"">
-            <p>
-            <h1>This is the code to confirm your email:</h1>
-              <a href="${process.env.REACT_APP_DOMAIN}/verifyEmail/${emailTk}">Click here to confirm your email</a>
-              <h2 style="color:"red"">Note: </h2><span>This code expires after 1 hour</span>
+        <body style="font-family: Arial, sans-serif; color: #333;">
+            <h1 style="font-size:50px;font-style:italic;color: #555;font-weight:500">Arab Social</h1>
+            <p style="margin: 0; padding: 0;">
+                <h1 style="color: #4CAF50; font-size: 24px;">This is the code to confirm your email:</h1>
+                <a href="${process.env.REACT_APP_DOMAIN}/verifyEmail/${emailTk}" style="color: #1a73e8; text-decoration: none; font-weight: bold;font-size:17px;font-style:italic">Click here to confirm your email</a>
+                <h2 style="font-size: 18px; color: #FF5733; margin-top: 20px;">Important Note: <span style="font-size: 14px; color: #555;display:inline">This code expires after 1 hour and can only be used once.</span></h2>
             </p>
         </body>
-      </html >`;
+      </html>`;
 
   const to = `${req.body.username} <${req.body.email}>`;
 
