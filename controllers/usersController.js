@@ -14,7 +14,7 @@ const fs = require("fs");
 
 // Get All Users (Admin)
 module.exports.getAllUsersCtrl = asyncHandler(async (req, res) => {
-  const users = await User.find().select("-password");
+  const users = await User.find().select("-password").select("-__v");
 
   res.status(200).json(users);
 });

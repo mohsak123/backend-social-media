@@ -121,7 +121,7 @@ module.exports.loginUserCtrl = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "invalid email or password" });
   }
 
-  const token = user.generateToken();
+  const token = await user.generateToken();
 
   return res.status(200).json({
     message: "Login is successfully",
