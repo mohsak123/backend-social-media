@@ -4,6 +4,7 @@ let transporter = nodemailer.createTransport({
   secure: true,
   // service: "gmail",
   host: "smtp.gmail.com",
+  // host: "smtp.gmail.com",
   port: 465,
   auth: {
     user: "kogoshakokah@gmail.com",
@@ -29,6 +30,6 @@ function sendMail(to, sub, msg) {
   console.log("send email");
 }
 
-sendMail("kogoshakokah@gmail.com", "This is subject", "this is message");
+// sendMail("kogoshakokah@gmail.com", "This is subject", "this is message");
 
 module.exports = { sendMail };
