@@ -16,5 +16,3 @@ router.post("/login", loginUserCtrl);
 router.route("/verifyEmail").post(verifyEmail);
 
 module.exports = router;
-
-// 672b087fc8b4320a801a143d
